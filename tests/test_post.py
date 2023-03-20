@@ -75,7 +75,7 @@ class TestPostEditView:
         assert 'group' in response.context['form'].fields, (
             'Проверьте, что в форме `form` на странице `/posts/<post_id>/edit/` есть поле `group`'
         )
-        assert type(response.context['form'].fields['group']) == forms.models.ModelChoiceField, (
+        assert isinstance(response.context['form'].fields['group'], forms.models.ModelChoiceField), (
             'Проверьте, что в форме `form` на странице `/posts/<post_id>/edit/` поле `group` типа `ModelChoiceField`'
         )
         assert not response.context['form'].fields['group'].required, (
@@ -85,7 +85,7 @@ class TestPostEditView:
         assert 'text' in response.context['form'].fields, (
             'Проверьте, что в форме `form` на странице `/posts/<post_id>/edit/` есть поле `text`'
         )
-        assert type(response.context['form'].fields['text']) == forms.fields.CharField, (
+        assert isinstance(response.context['form'].fields['text'], forms.fields.CharField), (
             'Проверьте, что в форме `form` на странице `/posts/<post_id>/edit/` поле `text` типа `CharField`'
         )
         assert response.context['form'].fields['text'].required, (
@@ -105,13 +105,20 @@ class TestPostEditView:
             else f'/posts/{post_with_group.id}/edit'
         )
 
-        response = user_client.post(url, data={'text': text, 'group': post_with_group.group_id})
+        response = user_client.post(
+            url,
+            data={
+                'text': text,
+                'group': post_with_group.group_id})
 
         assert response.status_code in (301, 302), (
             'Проверьте, что со страницы `/posts/<post_id>/edit/` '
             'после создания поста перенаправляете на страницу поста'
         )
-        post = Post.objects.filter(author=post_with_group.author, text=text, group=post_with_group.group).first()
+        post = Post.objects.filter(
+            author=post_with_group.author,
+            text=text,
+            group=post_with_group.group).first()
         assert post is not None, (
             'Проверьте, что вы изменили пост при отправки формы на странице `/posts/<post_id>/edit/`'
         )
