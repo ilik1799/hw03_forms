@@ -30,7 +30,7 @@ class PostPagesTest(TestCase):
             author=self.user,
             text='Тестовое описание поста',
             group=self.group
-            )
+        )
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
