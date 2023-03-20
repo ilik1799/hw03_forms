@@ -67,6 +67,3 @@ class PostCreateFormTests(TestCase):
                 'posts:post_detail', kwargs={'post_id': self.post.pk}))
 
         self.assertNotEqual(old_text, new_text)
-
-
-

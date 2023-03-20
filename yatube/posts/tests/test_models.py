@@ -33,7 +33,7 @@ class PostModelTest(TestCase):
         str_tests = {
             str(group): group.title,
             str(post)[:15]: post.text[:15]
-        }
+            }
 
         for model_field, expected_value in str_tests.items():
             with self.subTest(model_field=model_field):
