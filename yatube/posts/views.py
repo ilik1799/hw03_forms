@@ -3,15 +3,16 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from .models import Post, Group, User
 from .forms import PostForm
-from .models import Group, Post, User
-from .utils import paginate_queryset
+from yatube.constants import POSTS_PER_STR
+from .utils import create_page_object
 
 
 def index(request):
     post_list = Post.objects.all()
 
-    page_obj = paginate_queryset(request, post_list)
+    page_obj = create_page_object(request, post_list, POSTS_PER_STR)
 
     context = {
         'title': settings.TITLE_INDEX,
@@ -24,7 +25,7 @@ def group_posts(request, slug):
 
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
-    page_obj = paginate_queryset(request, post_list)
+    page_obj = create_page_object(request, post_list, POSTS_PER_STR)
 
     context = {
         'group': group,
@@ -36,14 +37,15 @@ def group_posts(request, slug):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    post_list = author.posts.all()
-
-    page_obj = paginate_queryset(request, post_list)
+    post_list = author.posts.select_related('author')
+    posts_count = Post.objects.filter(author__exact=author).count
+    page_obj = create_page_object(request, post_list, POSTS_PER_STR)
 
     context = {
         'author': author,
         'title': settings.TITLE_INDEX,
         'page_obj': page_obj,
+        'posts_count': posts_count,
     }
     return render(request, 'posts/profile.html', context)
 
@@ -51,16 +53,15 @@ def profile(request, username):
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     post_list = post.author.posts.all()
-
-    page_obj = paginate_queryset(request, post_list)
-
+    page_obj = create_page_object(request, post_list, POSTS_PER_STR)
+    posts_count = Post.objects.filter(author__exact=post.author).count
     is_edit = request.user == post.author
     context = {
         'post': post,
         'title': settings.TITLE_INDEX,
         'page_obj': page_obj,
-        'is_edit': is_edit
-
+        'is_edit': is_edit,
+        'posts_count': posts_count,
     }
     return render(request, 'posts/post_detail.html', context)
 
