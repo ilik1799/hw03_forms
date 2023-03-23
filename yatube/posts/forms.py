@@ -11,3 +11,4 @@ class PostForm(ModelForm):
         model = Post
         fields = ('text', 'group',)
         labels = {'text': 'Текст поста', 'group': 'Группа'}
+
