@@ -67,16 +67,19 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
-    postForm = PostForm(request.POST or None)
+    post_form = PostForm(request.POST or None)
     template = 'posts/create_post.html'
-    if postForm.is_valid():
-        text = postForm.cleaned_data['text']
-        group = postForm.cleaned_data['group']
-        author = request.user
-        result = Post(author=author, text=text, group=group)
-        result.save()
-        return redirect('posts:profile', author)
-    return render(request, template, {'form': postForm})
+    if post_form.is_valid():
+        post = post_form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect('posts:profile', request.user.username)
+
+    context = {
+        'form': post_form,
+        'is_edit': False
+    }
+    return render(request, template, {'form': context})
 
 
 @login_required
@@ -85,10 +88,10 @@ def post_edit(request, post_id):
     if not request.user == post.author:
         return redirect('posts:post_detail', post.author)
 
-    postForm = PostForm(request.POST or None, instance=post)
+    post_form = PostForm(request.POST or None, instance=post)
     template = 'posts/create_post.html'
-    if postForm.is_valid():
-        postForm.save()
+    if post_form.is_valid():
+        post_form.save()
         return redirect('posts:post_detail', post_id)
 
-    return render(request, template, {'form': postForm, 'is_edit': True})
+    return render(request, template, {'form': post_form, 'is_edit': True})

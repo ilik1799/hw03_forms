@@ -10,6 +10,4 @@ class PostForm(ModelForm):
     class Meta:
         model = Post
         fields = ('text', 'group',)
-        help_texts = {'text': 'Текст публикации', 'group': 'Пожалуйста, '
-                      'выберете наиболее подходящую группу из списка или '
-                      'оставьте без группы'}
+        labels = {'text': 'Текст поста', 'group': 'Группа'}
