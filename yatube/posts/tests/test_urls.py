@@ -1,3 +1,4 @@
+# posts/tests/test_urls.py
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 from rest_framework import status
@@ -62,3 +63,16 @@ class TaskURLTests(TestCase):
             with self.subTest(address=address):
                 response = self.guest_client.get(address)
                 self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # Проверяем доступность страниц для авторизованного пользователя
+    # def test_task_list_url_exists_at_desired_location(self):
+    #     """Страница /posts/<int:post_id>/edit/ доступна автору публикации."""
+    #     response = self.authorized_client.get(
+    #         f'/posts/{TaskURLTests.post.pk}/edit/')
+    #     self.assertEqual(response.status_code, 200)
+
+    # def test_task_detail_url_exists_at_desired_location_authorized(self):
+    #     """Страница /create/ доступна авторизованному
+    #     пользователю."""
+    #     response = self.authorized_client.get('/create/')
+    #     self.assertEqual(response.status_code, 200)

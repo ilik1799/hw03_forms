@@ -1,10 +1,11 @@
+# deals/tests/tests_form.py
+
 from posts.forms import PostForm
 from posts.models import Group, Post
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
-
 User = get_user_model()
 
 
